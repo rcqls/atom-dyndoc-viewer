@@ -75,7 +75,7 @@ module.exports =
       else
         createDyndocViewer(filePath: pathname)
 
-    rendererDyndoc = rendererDyndocLocal
+    rendererDyndoc = rendererDyndocRemote
 
   coffee: ->
     selection = atom.workspace.getActiveEditor().getSelection()
