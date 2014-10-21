@@ -3,9 +3,8 @@ url = require 'url'
 dyndoc_viewer = null
 DyndocViewer = require './dyndoc-viewer' #null # Defer until used
 rendererCoffee = require './render-coffee'
-rendererDyndocRemote = require './render-dyndoc'
-rendererDyndocLocal = require './render-dyndoc-local'
-rendererDyndoc = null # Defer until user choose mode local or server
+rendererDyndoc = require './render-dyndoc'
+#rendererDyndoc = null # Defer until user choose mode local or server
 
 createDyndocViewer = (state) ->
   DyndocViewer ?= require './dyndoc-viewer'
@@ -75,8 +74,6 @@ module.exports =
       else
         createDyndocViewer(filePath: pathname)
 
-    rendererDyndoc = rendererDyndocRemote
-
   coffee: ->
     selection = atom.workspace.getActiveEditor().getSelection()
     text = selection.getText()
@@ -88,8 +85,9 @@ module.exports =
     if text == ""
       text = atom.workspace.getActiveEditor().getText()
     #util = require 'util'
-    #console.log util.inspect text
+
     text='[#require]Tools/Atom\n[#main][#>]{#atomInit#}\n'+text
+    ##console.log "text:  "+text
     rendererDyndoc.eval text, atom.workspace.getActiveEditor().getPath(), (error, content) ->
       if error
         console.log "err: "+content
@@ -98,7 +96,8 @@ module.exports =
         content=content.replace /__DIESE_ATOM__/g, '#'
         content=content.replace /__AROBAS_ATOM__\{/g, '#{'
 
-        #console.log "echo:" + content
+        #
+        console.log "echo:" + content
         #fs = require "fs"
         #fs.writeFile "/Users/remy/test_atom.coffee", content, (error) ->
         #  console.error("Error writing file", error) if error

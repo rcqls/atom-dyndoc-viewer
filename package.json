@@ -15,8 +15,6 @@
      "fs-plus": "2.x",
      "pathwatcher": "^2.0",
      "underscore-plus": "1.x",
-     "coffee-script": "1.7.x",
-     "ffi": "git://github.com/avatar5d/node-ffi",
-     "ref": "0.3.x"
+     "coffee-script": "1.7.x"
   }
 }
