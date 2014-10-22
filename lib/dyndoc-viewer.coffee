@@ -3,7 +3,7 @@ path = require 'path'
 {$, $$$, ScrollView} = require 'atom'
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
-{File} = require 'pathwatcher'
+# {File} = require 'pathwatcher'
 
 rendererDyndoc = require './render-dyndoc'
 
@@ -19,10 +19,10 @@ class DyndocViewer extends ScrollView
       @resolveEditor(@editorId)
     else
       if atom.workspace?
-        @subscribeToFilePath(filePath)
+        # @subscribeToFilePath(filePath)
       else
-        @subscribe atom.packages.once 'activated', =>
-          @subscribeToFilePath(filePath)
+        #@subscribe atom.packages.once 'activated', =>
+        #  @subscribeToFilePath(filePath)
 
   serialize: ->
     deserializer: 'DyndocViewer'
@@ -32,11 +32,11 @@ class DyndocViewer extends ScrollView
   destroy: ->
     @unsubscribe()
 
-  subscribeToFilePath: (filePath) ->
-    @file = new File(filePath)
-    @trigger 'title-changed'
-    @handleEvents()
-    #@renderDyndoc()
+  # subscribeToFilePath: (filePath) ->
+  #   @file = new File(filePath)
+  #   @trigger 'title-changed'
+  #   @handleEvents()
+  #   #@renderDyndoc()
 
   resolveEditor: (editorId) ->
     resolve = =>
