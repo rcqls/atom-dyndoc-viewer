@@ -16,7 +16,9 @@
 
 
 '.platform-win32 .workspace, .platform-linux .workspace':
-  'ctrl-alt-x': 'dyndoc-viewer:eval'
+  'ctrl-alt-x d': 'dyndoc-viewer:eval'
+  'ctrl-alt-x a': 'dyndoc-viewer:atom-dyndoc'
+  'ctrl-alt-x c': 'dyndoc-viewer:coffee'
   'ctrl-alt-t': 'dyndoc-viewer:toggle'
 
 '.platform-darwin .dyndoc-viewer':
