@@ -1,9 +1,12 @@
 url = require 'url'
+path = require 'path'
 
 dyndoc_viewer = null
 DyndocViewer = require './dyndoc-viewer' #null # Defer until used
 rendererCoffee = require './render-coffee'
 rendererDyndoc = require './render-dyndoc'
+DyndocRunner = require './dyndoc-runner'
+
 #rendererDyndoc = null # Defer until user choose mode local or server
 
 createDyndocViewer = (state) ->
@@ -22,7 +25,9 @@ atom.deserializers.add(deserializer)
 
 module.exports =
   configDefaults:
-    dyndoc: 'local' # or 'server' 
+    dyndoc: 'local' # or 'server'
+    dyndocRunCmd: if process.platform == 'win32' then 'rubyw' else 'ruby'
+    dyndocRunScript: path.join process.env["HOME"],"dyndoc","server","dyndoc-server-simple.rb"
     localServer: true
     localServerUrl: 'localhost'
     localServerPort: 7777
@@ -73,6 +78,11 @@ module.exports =
         createDyndocViewer(editorId: pathname.substring(1))
       else
         createDyndocViewer(filePath: pathname)
+
+    DyndocRunner.start()
+
+  deactivate: ->
+    DyndocRunner.stop()
 
   coffee: ->
     selection = atom.workspace.getActiveEditor().getSelection()

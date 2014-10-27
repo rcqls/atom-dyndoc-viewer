@@ -1,4 +1,8 @@
+DyndocRunner = require './dyndoc-runner'
+
 exports.eval = (text='', filePath, callback) ->
+
+	DyndocRunner.started()
 
 	decode_cmd = (cmd) ->
 	  regexp = /^__send_cmd__\[\[([a-zA-Z0-9_]*)\]\]__([\s\S]*)/m
