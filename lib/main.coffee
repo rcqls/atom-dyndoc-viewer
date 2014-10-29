@@ -26,7 +26,7 @@ atom.deserializers.add(deserializer)
 module.exports =
   configDefaults:
     dyndoc: 'local' # or 'server'
-    dyndocHome: path.join process.env["HOME"],"devel","dyndoc"
+    dyndocHome: path.join process.env["HOME"],"dyndoc"
     addToPath: '/usr/local/bin'
     localServer: true
     localServerUrl: 'localhost'
