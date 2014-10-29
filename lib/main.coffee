@@ -26,8 +26,7 @@ atom.deserializers.add(deserializer)
 module.exports =
   configDefaults:
     dyndoc: 'local' # or 'server'
-    dyndocRunCmd: if process.platform == 'win32' then 'rubyw' else 'ruby'
-    dyndocRunScript: path.join process.env["HOME"],"dyndoc","server","dyndoc-server-simple.rb"
+    dyndocHome: path.join process.env["HOME"],"devel","dyndoc"
     localServer: true
     localServerUrl: 'localhost'
     localServerPort: 7777

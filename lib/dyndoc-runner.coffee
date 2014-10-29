@@ -1,4 +1,5 @@
 spawn = (require 'child_process').spawn
+path = require 'path'
 
 dyndoc_env = process.env
 
@@ -8,9 +9,14 @@ module.exports=
 class DyndocRunner
 
   @dyndoc_server = null
+  @dyndoc_run_cmd = if process.platform == 'win32' then 'rubyw' else 'ruby'
 
   @start: ->
-  	@dyndoc_server = spawn atom.config.get('dyndoc-viewer.dyndocRunCmd'),[atom.config.get('dyndoc-viewer.dyndocRunScript')],{"env": dyndoc_env}
+  	dyndoc_env["DYN_HOME"] =  atom.config.get('dyndoc-viewer.dyndocHome')
+  	## To fix PATH when /usr/local/bin not inside PATH
+  	if dyndoc_env["PATH"].split(":").indexOf("/usr/local/bin") < 0
+  	  dyndoc_env["PATH"] += ":/usr/local/bin"
+  	@dyndoc_server = spawn @dyndoc_run_cmd,[path.join atom.config.get('dyndoc-viewer.dyndocHome'),"bin","dyndoc-server-simple.rb"],{"env": dyndoc_env}
   	
   	@dyndoc_server.stderr.on 'data', (data) ->
   	  console.log 'dyndoc stderr: ' + data
