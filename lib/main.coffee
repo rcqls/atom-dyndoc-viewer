@@ -27,6 +27,7 @@ module.exports =
   configDefaults:
     dyndoc: 'local' # or 'server'
     dyndocHome: path.join process.env["HOME"],"devel","dyndoc"
+    addToPath: '/usr/local/bin'
     localServer: true
     localServerUrl: 'localhost'
     localServerPort: 7777

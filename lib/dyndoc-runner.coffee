@@ -14,8 +14,9 @@ class DyndocRunner
   @start: ->
   	dyndoc_env["DYN_HOME"] =  atom.config.get('dyndoc-viewer.dyndocHome')
   	## To fix PATH when /usr/local/bin not inside PATH
-  	if dyndoc_env["PATH"].split(":").indexOf("/usr/local/bin") < 0
-  	  dyndoc_env["PATH"] += ":/usr/local/bin"
+  	for pa in atom.config.get('dyndoc-viewer.addToPath').split(":")
+  	  dyndoc_env["PATH"] += ":" + pa if dyndoc_env["PATH"].split(":").indexOf(pa) < 0
+  	    
   	@dyndoc_server = spawn @dyndoc_run_cmd,[path.join atom.config.get('dyndoc-viewer.dyndocHome'),"bin","dyndoc-server-simple.rb"],{"env": dyndoc_env}
   	
   	@dyndoc_server.stderr.on 'data', (data) ->
