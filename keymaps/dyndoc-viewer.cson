@@ -8,14 +8,14 @@
 # For more detailed documentation see
 # https://www.atom.io/docs/latest/advanced/keymaps
 
-'.platform-darwin .workspace':
+'.platform-darwin atom-workspace':
   'cmd-alt-x d': 'dyndoc-viewer:eval'
   'cmd-alt-x a': 'dyndoc-viewer:atom-dyndoc'
   'cmd-alt-x c': 'dyndoc-viewer:compile'
   'cmd-alt-t': 'dyndoc-viewer:toggle'
 
 
-'.platform-win32 .workspace, .platform-linux .workspace':
+'.platform-win32 atom-workspace, .platform-linux atom-workspace':
   'ctrl-alt-x d': 'dyndoc-viewer:eval'
   'ctrl-alt-x a': 'dyndoc-viewer:atom-dyndoc'
   'ctrl-alt-x c': 'dyndoc-viewer:compile'

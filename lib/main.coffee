@@ -18,53 +18,72 @@ isDyndocViewer = (object) ->
   DyndocViewer ?= require './dyndoc-viewer'
   object instanceof DyndocViewer
 
-deserializer =
+atom.deserializers.add
   name: 'DyndocViewer'
   deserialize: (state) ->
     createDyndocViewer(state) if state.constructor is Object
-atom.deserializers.add(deserializer)
 
 module.exports =
-  configDefaults:
-    dyndoc: 'local' # or 'server'
-    dyndocHome: if fs.existsSync(path.join process.env["HOME"],".dyndoc_home") then String(fs.readFileSync(path.join process.env["HOME"],".dyndoc_home")).trim() else path.join process.env["HOME"],"dyndoc" 
-    addToPath: '/usr/local/bin:' + path.join(process.env["HOME"],"bin") # you can add anoter path with ":"
-    localServer: true
-    localServerUrl: 'localhost'
-    localServerPort: 7777
-    remoteServerUrl: 'sagag6.upmf-grenoble.fr'
-    remoteServerPort: 5555
-    breakOnSingleNewline: false
-    liveUpdate: true
-    grammars: [
-      'source.dyndoc'
-      'source.gfm'
-      'text.html.basic'
-      'text.html.textile'
-    ]
+  config:
+    dyndoc: 
+      type: 'string'
+      default: 'local' # or 'server'
+    dyndocHome:
+      type: 'string'
+      default: if fs.existsSync(path.join process.env["HOME"],".dyndoc_home") then String(fs.readFileSync(path.join process.env["HOME"],".dyndoc_home")).trim() else path.join process.env["HOME"],"dyndoc" 
+    addToPath: 
+      type: 'string'
+      default: '/usr/local/bin:' + path.join(process.env["HOME"],"bin") # you can add anoter path with ":"
+    localServer: 
+      type: 'boolean' 
+      default: true
+    localServerUrl: 
+      type: 'string'
+      default: 'localhost'
+    localServerPort: 
+      type: 'integer'
+      default: 7777
+    remoteServerUrl:
+      type: 'string'
+      default: 'sagag6.upmf-grenoble.fr'
+    remoteServerPort: 
+      type: 'integer'
+      default: 5555
+    breakOnSingleNewline:
+      type: 'boolean' 
+      default: false
+    liveUpdate: 
+      type: 'boolean' 
+      default: true
+    grammars:
+      type: 'array'
+      default: [
+        'source.dyndoc'
+        'source.gfm'
+        'text.html.basic'
+        'text.html.textile'
+      ]
 
   activate: ->
-    atom.workspaceView.command "dyndoc-viewer:eval", =>
-      @eval()
+    atom.commands.add 'atom-workspace', 
+      'dyndoc-viewer:eval': =>
+        @eval()
+      'dyndoc-viewer:compile': =>
+        @compile()
+      'dyndoc-viewer:atom-dyndoc': =>
+        @atomDyndoc()
+      'dyndoc-viewer:coffee': =>
+        @coffee()
+      'dyndoc-viewer:toggle': =>
+        @toggle()
+      'dyndoc-viewer:toggle-break-on-single-newline': ->
+        keyPath = 'dyndoc-viewer.breakOnSingleNewline'
+        atom.config.set(keyPath,!atom.config.get(keyPath))
 
-    atom.workspaceView.command "dyndoc-viewer:compile", =>
-      @compile()
 
-    atom.workspaceView.command "dyndoc-viewer:atom-dyndoc", =>
-      @atomDyndoc()
-
-    atom.workspaceView.command "dyndoc-viewer:coffee", =>
-      @coffee()
-
-    atom.workspaceView.command 'dyndoc-viewer:toggle', =>
-      @toggle()
-
-    atom.workspaceView.on 'dyndoc-viewer:preview-file', (event) =>
-      @previewFile(event)
-
-    atom.workspaceView.command 'dyndoc-viewer:toggle-break-on-single-newline', ->
-      atom.config.toggle('dyndoc-viewer.breakOnSingleNewline')
-
+    #atom.workspaceView.on 'dyndoc-viewer:preview-file', (event) =>
+    #  @previewFile(event)
+ 
     atom.workspace.registerOpener (uriToOpen) ->
       try
         {protocol, host, pathname} = url.parse(uriToOpen)
@@ -169,12 +188,13 @@ module.exports =
         #DyndocViewer.renderDyndoc()
         previousActivePane.activate()
 
-  previewFile: ({target}) ->
-    filePath = $(target).view()?.getPath?()
-    return unless filePath
 
-    for editor in atom.workspace.getEditors() when editor.getPath() is filePath
-      @addPreviewForEditor(editor)
-      return
+  # previewFile: ({target}) ->
+  #   filePath = $(target).view()?.getPath?() #Maybe to replace with: filePath = target.dataset.path
+  #   return unless filePath
 
-    atom.workspace.open "dyndoc-viewer://#{encodeURI(filePath)}", searchAllPanes: true
+  #   for editor in atom.workspace.getEditors() when editor.getPath() is filePath
+  #     @addPreviewForEditor(editor)
+  #     return
+
+  #   atom.workspace.open "dyndoc-viewer://#{encodeURI(filePath)}", searchAllPanes: true

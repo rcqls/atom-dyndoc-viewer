@@ -1,6 +1,8 @@
 path = require 'path'
 
-{$, $$$, ScrollView} = require 'atom'
+{Emitter, Disposable, CompositeDisposable} = require 'atom'
+{$, $$$, ScrollView} = require 'atom-space-pen-views'
+
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
 # {File} = require 'pathwatcher'
@@ -10,10 +12,17 @@ rendererDyndoc = require './render-dyndoc'
 module.exports =
 class DyndocViewer extends ScrollView
   @content: ->
-    @div class: 'dyndoc-viewer native-key-bindings', tabindex: -1, =>
+    @div class: 'dyndoc-viewer native-key-bindings', tabindex: -1
 
   constructor: ({@editorId, filePath}) ->
     super
+    @emitter = new Emitter
+    @disposables = new CompositeDisposable
+
+
+  attached: ->
+    return if @isAttached
+    @isAttached = true
 
     if @editorId?
       @resolveEditor(@editorId)
@@ -30,19 +39,20 @@ class DyndocViewer extends ScrollView
     editorId: @editorId
 
   destroy: ->
-    @unsubscribe()
+    @disposables.dispose() #OLD: @unsubscribe()
 
   # subscribeToFilePath: (filePath) ->
   #   @file = new File(filePath)
-  #   @trigger 'title-changed'
+  #   @emitter.emit 'title-changed'
   #   @handleEvents()
   #   #@renderDyndoc()
 
   resolveEditor: (editorId) ->
     resolve = =>
       @editor = @editorForId(editorId)
+      
       if @editor?
-        @trigger 'title-changed' if @editor?
+        @emitter.emit 'did-title-changed' if @editor?
         @handleEvents()
       else
         # The editor this preview was created for has been closed so close
@@ -52,9 +62,10 @@ class DyndocViewer extends ScrollView
     if atom.workspace?
       resolve()
     else
-      @subscribe atom.packages.once 'activated', =>
-        resolve()
-        #@renderDyndoc()
+      @disposables.add atom.packages.onDidActivateInitialPackages(resolve)
+      # OLD: @subscribe atom.packages.once 'activated', =>
+      #   resolve()
+      #   #@renderDyndoc()
 
   editorForId: (editorId) ->
     for editor in atom.workspace.getEditors()
@@ -63,19 +74,20 @@ class DyndocViewer extends ScrollView
 
   handleEvents: ->
     #@subscribe atom.syntax, 'grammar-added grammar-updated', _.debounce((=> @renderDyndoc()), 250)
-    @subscribe this, 'core:move-up', => @scrollUp()
-    @subscribe this, 'core:move-down', => @scrollDown()
-
-    @subscribeToCommand atom.workspaceView, 'dyndoc-viewer:zoom-in', =>
-      zoomLevel = parseFloat(@css('zoom')) or 1
-      @css('zoom', zoomLevel + .1)
-
-    @subscribeToCommand atom.workspaceView, 'dyndoc-viewer:zoom-out', =>
-      zoomLevel = parseFloat(@css('zoom')) or 1
-      @css('zoom', zoomLevel - .1)
-
-    @subscribeToCommand atom.workspaceView, 'dyndoc-viewer:reset-zoom', =>
-      @css('zoom', 1)
+    
+    atom.commands.add @element,
+      'core:move-up': => 
+        @scrollUp()
+      'core:move-down': => 
+        @scrollDown()
+      'dyndoc-viewer:zoom-in': =>
+        zoomLevel = parseFloat(@css('zoom')) or 1
+        @css('zoom', zoomLevel + .1)
+      'dyndoc-viewer:zoom-out': =>
+        zoomLevel = parseFloat(@css('zoom')) or 1
+        @css('zoom', zoomLevel - .1)
+      'dyndoc-viewer:reset-zoom': =>
+        @css('zoom', 1)
 
     changeHandler = =>
       #@renderDyndoc()
@@ -84,22 +96,29 @@ class DyndocViewer extends ScrollView
         pane.activateItem(this)
 
     if @file?
-      @subscribe(@file, 'contents-changed', changeHandler)
+      @disposables.add @file.onDidChange(changeHandler)
     else if @editor?
-      @subscribe @editor.getBuffer(), 'contents-modified', =>
+      @disposables.add @editor.getBuffer().onDidStopChanging =>
         changeHandler() if atom.config.get 'dyndoc-viewer.liveUpdate'
-      @subscribe @editor, 'path-changed', => @trigger 'title-changed'
-      @subscribe @editor.getBuffer(), 'reloaded saved', =>
+      @disposables.add  @editor.onDidChangePath => @emitter.emit 'did-title-changed'
+      @disposables.add @editor.getBuffer().onDidSave =>
+        changeHandler() unless atom.config.get 'dyndoc-viewer.liveUpdate'
+      @disposables.add @editor.getBuffer().onDidReload =>
         changeHandler() unless atom.config.get 'dyndoc-viewer.liveUpdate'
 
-    @subscribe atom.config.observe 'dyndoc-viewer.breakOnSingleNewline', callNow: false, changeHandler
+    @disposables.add atom.config.onDidChange 'dyndoc-viewer.breakOnSingleNewline', changeHandler
 
   renderDyndoc: ->
-    #@showLoading()
+    @showLoading()
+    @getDyndocSource().then (source) => @renderDyndocText(source) if source?
+
+  getDyndocSource: ->
     if @file?
-      @file.read().then (contents) => @renderDyndocText(contents)
+      @file.read()
     else if @editor?
-      @render(@editor.getText())
+      Promise.resolve(@editor.getText())
+    else
+      Promise.resolve(null)
 
   render: (text) ->
     console.log("text:"+text)

@@ -11,9 +11,10 @@
     "atom": ">0.39.0"
   },
   "dependencies": {
-     "net": ">1.0.0",
-     "fs-plus": "2.x",
-     "underscore-plus": "1.x",
-     "coffee-script": "1.7.x"
+    "atom-space-pen-views": "^2.0.0",
+    "net": ">1.0.0",
+    "fs-plus": "2.x",
+    "underscore-plus": "1.x",
+    "coffee-script": "1.7.x"
   }
 }
