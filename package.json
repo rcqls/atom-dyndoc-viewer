@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "dyndoc viewer from atom",
-  "activationEvents": ["dyndoc-viewer:eval","dyndoc-viewer:atom-dyndoc","dyndoc-viewer:toggle"],
+  "activationEvents": ["dyndoc-viewer:eval","dyndoc-viewer:atom-dyndoc","dyndoc-viewer:compile","dyndoc-viewer:toggle"],
   "repository": "https://github.com/rcqls/atom-dyndoc-viewer",
   "license": "LGPL",
   "engines": {

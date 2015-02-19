@@ -1,5 +1,6 @@
 url = require 'url'
 path = require 'path'
+fs = require 'fs'
 
 dyndoc_viewer = null
 DyndocViewer = require './dyndoc-viewer' #null # Defer until used
@@ -26,8 +27,8 @@ atom.deserializers.add(deserializer)
 module.exports =
   configDefaults:
     dyndoc: 'local' # or 'server'
-    dyndocHome: path.join process.env["HOME"],"dyndoc"
-    addToPath: '/usr/local/bin'
+    dyndocHome: if fs.existsSync(path.join process.env["HOME"],".dyndoc_home") then String(fs.readFileSync(path.join process.env["HOME"],".dyndoc_home")).trim() else path.join process.env["HOME"],"dyndoc" 
+    addToPath: '/usr/local/bin:' + path.join(process.env["HOME"],"bin") # you can add anoter path with ":"
     localServer: true
     localServerUrl: 'localhost'
     localServerPort: 7777
@@ -45,6 +46,9 @@ module.exports =
   activate: ->
     atom.workspaceView.command "dyndoc-viewer:eval", =>
       @eval()
+
+    atom.workspaceView.command "dyndoc-viewer:compile", =>
+      @compile()
 
     atom.workspaceView.command "dyndoc-viewer:atom-dyndoc", =>
       @atomDyndoc()
@@ -125,6 +129,10 @@ module.exports =
     #    console.log "err: "+content
     #  else
     #   console.log "echo:" + content
+
+  compile: -> 
+    dyn_file = atom.workspace.getActiveEditor().getPath()
+    DyndocRunner.compile dyn_file
 
   toggle: ->
     if isDyndocViewer(atom.workspace.activePaneItem)

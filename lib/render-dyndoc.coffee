@@ -40,3 +40,5 @@ exports.eval = (text='', filePath, callback) ->
 	  	client.on 'error', (err) ->
 	    	#console.log('error:', err.message)
 	    	callback error,err.message
+
+	DyndocRunner.dyndoc_client = client 
