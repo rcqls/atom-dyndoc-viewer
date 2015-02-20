@@ -12,6 +12,10 @@
     		'command': 'dyndoc-viewer:eval' 
     	},
       {
+        'label': 'Compile Dyndoc'
+        'command': 'dyndoc-viewer:compile' 
+      },
+      {
         'label': 'Atom Dyndoc'
         'command': 'dyndoc-viewer:atom-dyndoc' 
       }

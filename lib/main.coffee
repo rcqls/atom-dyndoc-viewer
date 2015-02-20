@@ -150,7 +150,8 @@ module.exports =
     #   console.log "echo:" + content
 
   compile: -> 
-    dyn_file = atom.workspace.getActiveEditor().getPath()
+    dyn_file = atom.workspace.activePaneItem.getPath()
+    console.log("compile dyn_file:"+dyn_file)
     DyndocRunner.compile dyn_file
 
   toggle: ->
