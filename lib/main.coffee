@@ -121,6 +121,7 @@ module.exports =
 
     text='[#require]Tools/Atom\n[#main][#>]{#atomInit#}\n'+text
     ##console.log "text:  "+text
+    text=text.replace /\#\{/g,"__AROBAS_ATOM__{"
     rendererDyndoc.eval text, atom.workspace.getActiveEditor().getPath(), (error, content) ->
       if error
         console.log "err: "+content

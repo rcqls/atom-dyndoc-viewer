@@ -11,7 +11,7 @@ exports.eval = (text='', filePath, callback) ->
 
 	end_token = "__[[END_TOKEN]]__"
 
-	text=text.replace /\#\{/g,"__AROBAS_ATOM__{"
+	#text=text.replace /\#\{/g,"__AROBAS_ATOM__{"
 
 	net = require 'net'
 	#util = require 'util'
