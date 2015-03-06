@@ -18,6 +18,10 @@
       {
         'label': 'Atom Dyndoc'
         'command': 'dyndoc-viewer:atom-dyndoc' 
+      },
+      {
+        'label': 'Kill Dyndoc Server'
+        'command': 'dyndoc-viewer:kill' 
       }
     ]
   ]

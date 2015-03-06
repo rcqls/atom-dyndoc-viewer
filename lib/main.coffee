@@ -76,6 +76,8 @@ module.exports =
         @coffee()
       'dyndoc-viewer:toggle': =>
         @toggle()
+      'dyndoc-viewer:kill': =>
+        @kill()
       'dyndoc-viewer:toggle-break-on-single-newline': ->
         keyPath = 'dyndoc-viewer.breakOnSingleNewline'
         atom.config.set(keyPath,!atom.config.get(keyPath))
@@ -154,6 +156,9 @@ module.exports =
     dyn_file = atom.workspace.activePaneItem.getPath()
     console.log("compile dyn_file:"+dyn_file)
     DyndocRunner.compile dyn_file
+
+  kill: ->
+    DyndocRunner.stop()
 
   toggle: ->
     if isDyndocViewer(atom.workspace.activePaneItem)
