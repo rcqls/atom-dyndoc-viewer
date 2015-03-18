@@ -14,6 +14,7 @@
   'cmd-alt-x c': 'dyndoc-viewer:compile'
   'cmd-alt-x t': 'dyndoc-viewer:toggle'
   'cmd-alt-x k': 'dyndoc-viewer:kill'
+  'cmd-alt-x s': 'dyndoc-viewer:start'
 
 
 '.platform-win32 atom-workspace, .platform-linux atom-workspace':
@@ -22,6 +23,7 @@
   'ctrl-alt-x c': 'dyndoc-viewer:compile'
   'ctrl-alt-x t': 'dyndoc-viewer:toggle'
   'ctrl-alt-x k': 'dyndoc-viewer:kill'
+  'ctrl-alt-x s': 'dyndoc-viewer:start'
 
 '.platform-darwin .dyndoc-viewer':
   'cmd-+': 'dyndoc-viewer:zoom-in'

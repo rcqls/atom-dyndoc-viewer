@@ -76,8 +76,10 @@ module.exports =
         @coffee()
       'dyndoc-viewer:toggle': =>
         @toggle()
+      'dyndoc-viewer:start': =>
+        @startServer()
       'dyndoc-viewer:kill': =>
-        @kill()
+        @killServer()
       'dyndoc-viewer:toggle-break-on-single-newline': ->
         keyPath = 'dyndoc-viewer.breakOnSingleNewline'
         atom.config.set(keyPath,!atom.config.get(keyPath))
@@ -157,7 +159,10 @@ module.exports =
     console.log("compile dyn_file:"+dyn_file)
     DyndocRunner.compile dyn_file
 
-  kill: ->
+  startServer: ->
+    DyndocRunner.start()
+
+  killServer: ->
     DyndocRunner.stop()
 
   toggle: ->

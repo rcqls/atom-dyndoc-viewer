@@ -22,6 +22,10 @@
       {
         'label': 'Kill Dyndoc Server'
         'command': 'dyndoc-viewer:kill' 
+      },
+      {
+        'label': 'Start Dyndoc Server'
+        'command': 'dyndoc-viewer:start' 
       }
     ]
   ]

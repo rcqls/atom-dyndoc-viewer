@@ -41,7 +41,7 @@ class DyndocRunner
     console.log 'DyndocRunner is killed!'
 
   @compile: (dyn_file) ->
-  	compile_cmd=@dyndoc_run_cmd + " " + path.join(atom.config.get('dyndoc-viewer.dyndocHome'),"bin","dyndoc-compile.rb") + " " + dyn_file
+  	compile_cmd=@dyndoc_run_cmd + " " + path.join(atom.config.get('dyndoc-viewer.dyndocHome'),"bin","dyndoc-compile.rb") + " \"" + dyn_file + "\""
   	exec compile_cmd, {"env": dyndoc_env}, (error,stdout,stderr) ->
   	  console.log 'dyndoc-compile stdout: ' + stdout
   	  console.log 'dyndoc-compile stderr: ' + stderr
